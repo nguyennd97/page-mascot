@@ -10,6 +10,7 @@ export const MASCOTS = [
   'hamster',
   'hedgehog',
   'koala',
+  'mouse',
   'otter',
   'owl',
   'panda',
