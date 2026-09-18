@@ -9,7 +9,7 @@ An interactive character that watches the cursor and blinks when you poke it.
 ## Install
 
 ```bash
-npm i page-mascot
+npm i @dangnguyendota/page-mascot
 ```
 
 ## Use existing mascots
