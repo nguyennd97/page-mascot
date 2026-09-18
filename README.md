@@ -18,7 +18,7 @@ Pick a character on the [demo page](https://koboyo.com/page-mascot) and download
 sheets into `public/mascots`, then point the component at them:
 
 ```tsx
-import { Mascot } from 'page-mascot'
+import { Mascot } from '@dangnguyendota/page-mascot'
 
 <Mascot
   directions="/mascots/fox-directions.webp"
@@ -83,7 +83,7 @@ Pass a ref to trigger an expression from code, without waiting for a click:
 
 ```tsx
 import { useRef } from 'react'
-import { Mascot, type MascotHandle } from 'page-mascot'
+import { Mascot, type MascotHandle } from '@dangnguyendota/page-mascot'
 
 const mascotRef = useRef<MascotHandle>(null)
 

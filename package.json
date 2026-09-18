@@ -1,13 +1,13 @@
 {
-  "name": "page-mascot",
-  "version": "0.1.0",
+  "name": "@dangnguyendota/page-mascot",
+  "version": "0.2.1",
   "description": "An interactive character that watches the cursor and blinks when you poke it.",
   "license": "MIT",
   "author": "Kamran Ahmed",
   "homepage": "https://koboyo.com/page-mascot",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nilbuild/page-mascot.git"
+    "url": "git+https://github.com/nguyennd97/page-mascot.git"
   },
   "keywords": ["mascot", "avatar", "react", "cursor", "sprite", "portfolio"],
   "type": "module",
