@@ -1,6 +1,6 @@
 {
   "name": "@dangnguyendota/page-mascot",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "An interactive character that watches the cursor and blinks when you poke it.",
   "license": "MIT",
   "author": "Kamran Ahmed",
@@ -9,7 +9,14 @@
     "type": "git",
     "url": "git+https://github.com/nguyennd97/page-mascot.git"
   },
-  "keywords": ["mascot", "avatar", "react", "cursor", "sprite", "portfolio"],
+  "keywords": [
+    "mascot",
+    "avatar",
+    "react",
+    "cursor",
+    "sprite",
+    "portfolio"
+  ],
   "type": "module",
   "sideEffects": false,
   "exports": {
@@ -19,7 +26,11 @@
     }
   },
   "types": "./dist/index.d.ts",
-  "files": ["dist", "README.md", "LICENSE"],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "dev": "vite",
     "sync:skill": "cp src/mascot.tsx skills/page-mascot/mascot.tsx",
