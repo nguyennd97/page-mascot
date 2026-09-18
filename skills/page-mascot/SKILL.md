@@ -59,7 +59,9 @@ import { Mascot } from 'page-mascot'
 
 `directions` and `reactions` are the served paths of the two sheets, or imported images.
 Both required. The other props are `size` (default 140), `label` (what a screen reader
-calls it) and `className`.
+calls it) and `className`. Pass a ref typed as `MascotHandle` to call
+`playAnimation(name)` (`happy`, `celebrate`, or any expression on the sheet) without
+waiting for a click.
 
 **Put it where the user asked.** If they did not say, the top of the page -- the header or
 hero, above or beside the title, which is where a head that watches the cursor reads best.

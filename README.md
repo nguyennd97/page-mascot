@@ -77,6 +77,43 @@ UI.
 Tracking switches off without a fine pointer, and the click squash honours
 `prefers-reduced-motion`.
 
+## Play an animation
+
+Pass a ref to trigger an expression from code, without waiting for a click:
+
+```tsx
+import { useRef } from 'react'
+import { Mascot, type MascotHandle } from 'page-mascot'
+
+const mascotRef = useRef<MascotHandle>(null)
+
+<Mascot
+  ref={mascotRef}
+  directions="/mascots/fox-directions.webp"
+  reactions="/mascots/fox-reactions.webp"
+/>
+
+<button onClick={() => mascotRef.current?.playAnimation('happy')}>
+  Happy
+</button>
+```
+
+`playAnimation(name)` walks a short sequence of cells on the reactions sheet, then
+returns to cursor tracking. A second call cancels the one that is playing and starts
+the new sequence from the first frame. Unknown names are ignored.
+
+Built-in sequences:
+
+| name | |
+| --- | --- |
+| `happy` | delighted ↔ heart |
+| `celebrate` | sparkle, heart, delighted |
+
+Every expression on the sheet is also a name, held briefly then released: `blink`,
+`heart`, `sparkle`, `surprised`, `wink`, `bashful`, `sleepy`, `dizzy`, `delighted`.
+
+Clicking the mascot still plays the original poke reaction.
+
 ## How it works
 
 Each character is two 3×3 sprite sheets: nine head directions, and nine expressions.
@@ -85,7 +122,8 @@ Each character is two 3×3 sprite sheets: nine head directions, and nine express
 
 The pointer's angle picks a cell on the directions sheet, with a dead zone so the head
 settles when the cursor is close. A click shows a cell from the reactions sheet for half a
-second.
+second. `playAnimation` uses that same sheet: while a sequence is playing it wins over
+head-turning, then tracking resumes on its own.
 
 The same character can be drawn in six styles: colour, ink, sketch, riso, paper and pixel.
 Only the rendering changes, so the alignment holds.

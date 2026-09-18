@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
 
 const DIRECTIONS = [
@@ -28,6 +28,16 @@ const REACTIONS = [
 type Direction = (typeof DIRECTIONS)[number]
 type Reaction = (typeof REACTIONS)[number]
 
+type MascotAnimation = {
+  frames: Reaction[]
+  frameDuration?: number
+  loop?: boolean
+}
+
+type Playback = MascotAnimation & {
+  durations?: number[]
+}
+
 // Clockwise from the right, matching atan2 with y pointing down.
 const CLOCKWISE: Direction[] = [
   'right',
@@ -50,6 +60,7 @@ const SQUASH_MS = 420
 const DIZZY_AFTER = 4
 const DIZZY_WINDOW = 1600
 const DIZZY_END = 1100
+const DEFAULT_FRAME_DURATION = 120
 
 const SQUASH: Keyframe[] = [
   { transform: 'scale(1, 1)', easing: 'ease-in' },
@@ -59,6 +70,21 @@ const SQUASH: Keyframe[] = [
   { transform: 'scale(1, 1)' },
 ]
 
+const ANIMATIONS: Record<string, MascotAnimation> = {
+  happy: {
+    frames: ['delighted', 'heart', 'delighted', 'heart'],
+    frameDuration: 120,
+  },
+  celebrate: {
+    frames: ['sparkle', 'heart', 'delighted', 'heart', 'sparkle'],
+    frameDuration: 100,
+  },
+}
+
+for (const reaction of REACTIONS) {
+  ANIMATIONS[reaction] ??= { frames: [reaction], frameDuration: BOOP_END }
+}
+
 // background-size 300% makes each cell a clean 0/50/100% step on both axes.
 function cell(index: number): CSSProperties {
   return { backgroundPosition: `${(index % 3) * 50}% ${Math.floor(index / 3) * 50}%` }
@@ -66,6 +92,10 @@ function cell(index: number): CSSProperties {
 
 function wrap(angle: number) {
   return Math.atan2(Math.sin(angle), Math.cos(angle))
+}
+
+function frameMs(playback: Playback, index: number) {
+  return playback.durations?.[index] ?? playback.frameDuration ?? DEFAULT_FRAME_DURATION
 }
 
 const layer: CSSProperties = {
@@ -86,7 +116,11 @@ export type MascotProps = {
   label?: string
 }
 
-export function Mascot(props: MascotProps) {
+export type MascotHandle = {
+  playAnimation(name: string): void
+}
+
+export const Mascot = forwardRef<MascotHandle, MascotProps>(function Mascot(props, ref) {
   const { directions, reactions, size = 140, className, label = 'mascot' } = props
 
   const buttonRef = useRef<HTMLButtonElement>(null)
@@ -150,14 +184,57 @@ export function Mascot(props: MascotProps) {
     }
   }, [])
 
-  const boop = () => {
+  const stopPlayback = () => {
     timersRef.current.forEach(window.clearTimeout)
     timersRef.current = []
+  }
 
-    const later = (ms: number, next: Reaction | null) => {
-      timersRef.current.push(window.setTimeout(() => setReaction(next), ms))
+  const later = (ms: number, fn: () => void) => {
+    timersRef.current.forEach(window.clearTimeout)
+    timersRef.current = [window.setTimeout(fn, ms)]
+  }
+
+  const play = (playback: Playback) => {
+    stopPlayback()
+
+    const frames = playback.frames
+    if (frames.length === 0) {
+      setReaction(null)
+      return
     }
 
+    const loop = playback.loop ?? false
+
+    const show = (index: number) => {
+      setReaction(frames[index])
+      const last = index === frames.length - 1
+
+      if (last && !loop) {
+        later(frameMs(playback, index), () => {
+          setReaction(null)
+          timersRef.current = []
+        })
+        return
+      }
+
+      later(frameMs(playback, index), () => show(last ? 0 : index + 1))
+    }
+
+    show(0)
+  }
+
+  const playAnimation = (name: string) => {
+    const animation = ANIMATIONS[name]
+    if (!animation) {
+      return
+    }
+
+    play(animation)
+  }
+
+  useImperativeHandle(ref, () => ({ playAnimation }))
+
+  const boop = () => {
     const now = Date.now()
     const boops = boopsRef.current
     boops.count = now - boops.at < DIZZY_WINDOW ? boops.count + 1 : 1
@@ -165,12 +242,12 @@ export function Mascot(props: MascotProps) {
 
     if (boops.count >= DIZZY_AFTER) {
       boops.count = 0
-      setReaction('dizzy')
-      later(DIZZY_END, null)
+      play({ frames: ['dizzy'], durations: [DIZZY_END] })
     } else {
-      setReaction('blink')
-      later(BOOP_PAYOFF, PAYOFFS[(boops.count - 1) % PAYOFFS.length])
-      later(BOOP_END, null)
+      play({
+        frames: ['blink', PAYOFFS[(boops.count - 1) % PAYOFFS.length]],
+        durations: [BOOP_PAYOFF, BOOP_END - BOOP_PAYOFF],
+      })
     }
 
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -228,4 +305,4 @@ export function Mascot(props: MascotProps) {
       </span>
     </button>
   )
-}
+})

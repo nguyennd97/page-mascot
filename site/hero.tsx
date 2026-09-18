@@ -1,4 +1,5 @@
-import { Mascot } from '../src/mascot'
+import { useRef } from 'react'
+import { Mascot, type MascotHandle } from '../src/mascot'
 import { MASCOTS, sheets } from './mascots'
 
 const REPO = 'https://github.com/nilbuild/page-mascot'
@@ -18,10 +19,23 @@ type HeroProps = {
 
 export function Hero(props: HeroProps) {
   const { character, onMakeYourOwn } = props
+  const mascotRef = useRef<MascotHandle>(null)
 
   return (
     <header className="flex flex-col items-start">
-      <Mascot key={character} {...sheets(character)} label={character} size={200} className="-ml-4" />
+      <Mascot ref={mascotRef} key={character} {...sheets(character)} label={character} size={200} className="-ml-4" />
+      <div className="-ml-4 mt-1 flex flex-wrap gap-1.5">
+        {(['happy', 'celebrate', 'surprised'] as const).map((name) => (
+          <button
+            key={name}
+            type="button"
+            onClick={() => mascotRef.current?.playAnimation(name)}
+            className="rounded-lg px-2 py-0.5 font-mono text-[11px] text-ink/40 transition-colors hover:bg-ink/5 hover:text-ink"
+          >
+            {name}
+          </button>
+        ))}
+      </div>
 
       <h1 className="mt-2 font-mono text-5xl font-bold tracking-tighter sm:text-6xl">
         /page-mascot
