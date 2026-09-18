@@ -41,15 +41,15 @@ Both routes end in *Put it on the page*. Do not stop at files and a snippet.
 ## Put it on the page
 
 **Install the component.** Use whichever package manager the lockfile points at:
-`npm i page-mascot`, `pnpm add page-mascot`, `yarn add page-mascot`, or
-`bun add page-mascot`. If this is not a package-managed React project, copy `mascot.tsx`
+`npm i @dangnguyendota/page-mascot`, `pnpm add @dangnguyendota/page-mascot`, `yarn add @dangnguyendota/page-mascot`, or
+`bun add @dangnguyendota/page-mascot`. If this is not a package-managed React project, copy `mascot.tsx`
 from beside this SKILL.md into the project instead -- it is one file, needs only React,
 and uses inline styles.
 
 **Render it:**
 
 ```tsx
-import { Mascot } from 'page-mascot'
+import { Mascot } from '@dangnguyendota/page-mascot'
 
 <Mascot
   directions="/mascots/fox-directions.webp"

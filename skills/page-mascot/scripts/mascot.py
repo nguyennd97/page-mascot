@@ -159,7 +159,7 @@ def main():
             print(f'\n{args.name} is ready:')
             print(f'  {os.path.join(args.dest, args.name)}-directions.webp')
             print(f'  {os.path.join(args.dest, args.name)}-reactions.webp')
-            print('Now install page-mascot and put <Mascot /> on the page (SKILL.md, "Put it on the page").')
+            print('Now install @dangnguyendota/page-mascot and put <Mascot /> on the page (SKILL.md, "Put it on the page").')
             return
 
         if moved > BOOP_LIMIT:
